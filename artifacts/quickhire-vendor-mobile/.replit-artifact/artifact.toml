@@ -1,0 +1,24 @@
+kind = "mobile"
+previewPath = "/vendor-mobile/"
+title = "QuickHire Vendor Mobile"
+description = "A fast mobile operations app for QuickHire car rental vendors to manage vehicles, availability, and bookings."
+version = "1.0.0"
+id = "artifacts/quickhire-vendor-mobile"
+router = "expo-domain"
+
+[[services]]
+name = "expo"
+ensurePreviewReachable = "/status"
+paths = [ "/vendor-mobile/" ]
+localPort = 21367
+
+[services.development]
+run = "pnpm --filter @workspace/quickhire-vendor-mobile run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/quickhire-vendor-mobile", "run", "build" ]
+run = [ "pnpm", "--filter", "@workspace/quickhire-vendor-mobile", "run", "serve" ]
+
+[services.env]
+PORT = "21367"
+BASE_PATH = "/vendor-mobile/"
