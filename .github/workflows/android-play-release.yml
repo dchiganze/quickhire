@@ -57,7 +57,12 @@ jobs:
           java-version: "17"
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        env:
+          NODE_ENV: development
+        run: pnpm install --frozen-lockfile --prod=false
+
+      - name: Verify Expo Babel preset
+        run: pnpm --filter @workspace/quickhire-vendor-mobile exec node -e "require.resolve('babel-preset-expo')"
 
       - name: Generate Android native project
         env:
