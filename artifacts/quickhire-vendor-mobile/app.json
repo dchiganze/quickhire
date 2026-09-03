@@ -14,9 +14,14 @@
       "backgroundColor": "#fbfaf7"
     },
     "ios": {
-      "supportsTablet": false
+      "supportsTablet": false,
+      "bundleIdentifier": "app.replit.quickhirevendormobile",
+      "buildNumber": "3"
     },
-    "android": {},
+    "android": {
+      "package": "com.quickhirevendormobile",
+      "versionCode": 1
+    },
     "web": {
       "favicon": "./assets/images/icon.png"
     },
