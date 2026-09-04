@@ -12,6 +12,6 @@ export default function TabLayout() {
     <Tabs.Screen name="index" options={{ title: 'Home', tabBarIcon: icon('home') }} />
     <Tabs.Screen name="vehicles" options={{ title: 'Vehicles', tabBarIcon: icon('truck') }} />
     <Tabs.Screen name="bookings" options={{ title: 'Bookings', tabBarIcon: icon('calendar') }} />
-    <Tabs.Screen name="more" options={{ title: 'More', tabBarIcon: icon('more-horizontal') }} />
+    <Tabs.Screen name="more" options={{ title: 'Profile', tabBarIcon: icon('user') }} />
   </Tabs>;
 }
