@@ -3,7 +3,6 @@
     "name": "QuickHire Vendor Mobile",
     "slug": "quickhire-vendor-mobile",
     "version": "1.0.0",
-    "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "quickhire-vendor-mobile",
     "userInterfaceStyle": "automatic",
@@ -20,7 +19,7 @@
     },
     "android": {
       "package": "com.quickhirevendormobile",
-      "versionCode": 4
+      "versionCode": 5
     },
     "web": {
       "favicon": "./assets/images/icon.png"
@@ -33,7 +32,8 @@
         }
       ],
       "expo-font",
-      "expo-web-browser"
+      "expo-web-browser",
+      "./plugins/withQuickHireAndroid"
     ],
     "experiments": {
       "typedRoutes": true,
