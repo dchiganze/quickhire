@@ -1,8 +1,10 @@
 import React from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View, type PressableProps, type TextInputProps, type ViewStyle } from 'react-native';
+import { router } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { useColors } from '@/hooks/useColors';
 import colors from '@/constants/colors';
+import { useNotificationPermission } from '@/hooks/useNotificationPermission';
 
 export function Logo({ compact = false }: { compact?: boolean }) {
   const c = useColors();
@@ -11,7 +13,19 @@ export function Logo({ compact = false }: { compact?: boolean }) {
 
 export function AppHeader({ title, subtitle, action }: { title: string; subtitle?: string; action?: React.ReactNode }) {
   const c = useColors();
-  return <View style={styles.header}><View style={styles.headerCopy}><Text style={[styles.eyebrow, { color: c.primary }]}>QUICKHIRE VENDOR</Text><Text style={[styles.headerTitle, { color: c.foreground }]}>{title}</Text>{subtitle && <Text style={[styles.headerSubtitle, { color: c.mutedForeground }]}>{subtitle}</Text>}</View>{action}</View>;
+  return <View style={styles.header}><View style={styles.headerCopy}><Text style={[styles.headerTitle, { color: c.foreground }]}>{title}</Text>{subtitle && <Text style={[styles.headerSubtitle, { color: c.mutedForeground }]}>{subtitle}</Text>}</View>{action}</View>;
+}
+
+export function NotificationButton() {
+  const c = useColors();
+  const { enabled, requestPermission } = useNotificationPermission();
+
+  async function openNotifications() {
+    if (!enabled && !(await requestPermission())) return;
+    router.push('/notifications');
+  }
+
+  return <Pressable testID="notification-button" accessibilityLabel="Open notifications" onPress={() => { void openNotifications(); }} hitSlop={10} style={({ pressed }) => [styles.notificationButton, { backgroundColor: c.card, borderColor: c.border, opacity: pressed ? 0.65 : 1 }]}><Feather name={enabled ? 'bell' : 'bell-off'} size={20} color={c.foreground} /></Pressable>;
 }
 
 export function PrimaryButton({ title, onPress, loading = false, icon, disabled = false, style }: { title: string; onPress: PressableProps['onPress']; loading?: boolean; icon?: keyof typeof Feather.glyphMap; disabled?: boolean; style?: ViewStyle }) {
@@ -41,7 +55,7 @@ export function EmptyState({ icon = 'inbox', title, message, action }: { icon?: 
 
 export const styles = StyleSheet.create({
   logoRow: { flexDirection: 'row', alignItems: 'center', gap: 9 }, logoMark: { width: 38, height: 38, borderRadius: 12, alignItems: 'center', justifyContent: 'center' }, logoText: { fontSize: 22, fontWeight: '700', letterSpacing: -0.7 },
-  header: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', paddingHorizontal: 20, paddingTop: 12, paddingBottom: 18 }, headerCopy: { flex: 1 }, eyebrow: { fontSize: 10, fontWeight: '700', letterSpacing: 1.2, marginBottom: 5 }, headerTitle: { fontSize: 28, fontWeight: '700', letterSpacing: -0.7 }, headerSubtitle: { fontSize: 14, marginTop: 4 },
+  header: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', paddingHorizontal: 20, paddingTop: 12, paddingBottom: 18 }, headerCopy: { flex: 1, paddingRight: 12 }, headerTitle: { fontSize: 28, fontWeight: '700', letterSpacing: -0.7 }, headerSubtitle: { fontSize: 14, marginTop: 4 }, notificationButton: { width: 42, height: 42, borderRadius: 14, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
   primaryButton: { minHeight: 50, paddingHorizontal: 18, borderRadius: 14, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', gap: 8 }, primaryButtonText: { fontSize: 15, fontWeight: '700' }, ghostButton: { minHeight: 48, borderWidth: 1, borderRadius: 14, paddingHorizontal: 16, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', gap: 8 }, ghostButtonText: { fontSize: 14, fontWeight: '600' },
   field: { gap: 7, marginBottom: 16 }, fieldLabel: { fontSize: 13, fontWeight: '600' }, input: { minHeight: 50, borderWidth: 1, borderRadius: 13, paddingHorizontal: 15, fontSize: 16 }, errorText: { fontSize: 12, marginTop: -2 },
   statusPill: { alignSelf: 'flex-start', borderRadius: 99, paddingHorizontal: 9, paddingVertical: 5, flexDirection: 'row', alignItems: 'center', gap: 6 }, statusDot: { width: 7, height: 7, borderRadius: 99 }, statusText: { fontSize: 12, fontWeight: '700' }, sectionLabel: { fontSize: 11, fontWeight: '700', letterSpacing: 1.1, textTransform: 'uppercase', marginBottom: 10 }, empty: { borderWidth: 1, borderRadius: 18, padding: 28, alignItems: 'center', gap: 9 }, emptyTitle: { fontSize: 17, fontWeight: '700', marginTop: 4 }, emptyMessage: { fontSize: 14, textAlign: 'center', lineHeight: 20 },
