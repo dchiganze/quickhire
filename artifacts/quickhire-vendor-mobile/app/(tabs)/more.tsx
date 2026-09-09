@@ -73,7 +73,7 @@ export default function MoreScreen() {
               <Feather name={item.icon as keyof typeof Feather.glyphMap} size={17} color={c.accentForeground} />
             </View>
             <Text style={[styles.itemLabel, { color: c.foreground }]}>{item.label}</Text>
-            {item.right || <Feather name="chevron-right" size={17} color={c.mutedForeground} />}
+            {item.right ? <View style={styles.itemControl}>{item.right}</View> : <Feather name="chevron-right" size={17} color={c.mutedForeground} />}
           </Pressable>
         ))}
       </View>
@@ -122,6 +122,7 @@ const styles = StyleSheet.create({
   last: { borderBottomWidth: 0 },
   itemIcon: { width: 34, height: 34, borderRadius: 11, alignItems: 'center', justifyContent: 'center' },
   itemLabel: { flex: 1, fontSize: 14, fontWeight: '600' },
+  itemControl: { alignSelf: 'stretch', minWidth: 51, justifyContent: 'center', alignItems: 'center' },
   actions: { borderWidth: 1, borderRadius: 18, overflow: 'hidden' },
   actionRow: { minHeight: 72, paddingHorizontal: 14, flexDirection: 'row', alignItems: 'center', gap: 12 },
   deleteRow: { minHeight: 72, paddingHorizontal: 14, flexDirection: 'row', alignItems: 'center', gap: 12, borderTopWidth: 1 },
