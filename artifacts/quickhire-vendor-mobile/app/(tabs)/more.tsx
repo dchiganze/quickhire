@@ -1,69 +1,18 @@
-import { useEffect, useState } from 'react';
-import { Alert, Linking, Platform, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
+import { Alert, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Notifications from 'expo-notifications';
 import { Feather } from '@expo/vector-icons';
 import { useGetVendor } from '@workspace/api-client-react';
 import { useColors } from '@/hooks/useColors';
 import { AppHeader, SectionLabel } from '@/components/ui';
-
-const NOTIFICATIONS_ENABLED_KEY = 'qh_notifications_enabled';
+import { useNotificationPermission } from '@/hooks/useNotificationPermission';
 
 export default function MoreScreen() {
-  const c = useColors(); const vendor = useGetVendor(1); const [notifications, setNotifications] = useState(false);
-
-  useEffect(() => {
-    let active = true;
-    (async () => {
-      const saved = await AsyncStorage.getItem(NOTIFICATIONS_ENABLED_KEY);
-      if (!active || saved !== 'true' || Platform.OS === 'web') return;
-      const permission = await Notifications.getPermissionsAsync();
-      if (active) setNotifications(permission.granted);
-    })();
-    return () => { active = false; };
-  }, []);
-
-  async function handleNotificationsChange(nextValue: boolean) {
-    if (!nextValue) {
-      setNotifications(false);
-      await AsyncStorage.setItem(NOTIFICATIONS_ENABLED_KEY, 'false');
-      return;
-    }
-
-    if (Platform.OS === 'web') {
-      Alert.alert('Notifications unavailable', 'Notification permissions can be enabled from the mobile app.');
-      return;
-    }
-
-    try {
-      const permission = await Notifications.requestPermissionsAsync();
-      if (!permission.granted) {
-        setNotifications(false);
-        await AsyncStorage.setItem(NOTIFICATIONS_ENABLED_KEY, 'false');
-        Alert.alert(
-          'Notifications remain off',
-          'Allow notifications in Settings if you want to receive booking updates.',
-          [
-            { text: 'Not now', style: 'cancel' },
-            { text: 'Open Settings', onPress: () => { void Linking.openSettings(); } },
-          ],
-        );
-        return;
-      }
-
-      setNotifications(true);
-      await AsyncStorage.setItem(NOTIFICATIONS_ENABLED_KEY, 'true');
-    } catch {
-      setNotifications(false);
-      await AsyncStorage.setItem(NOTIFICATIONS_ENABLED_KEY, 'false');
-      Alert.alert('Could not enable notifications', 'Please try again from your device settings.');
-    }
-  }
+  const c = useColors(); const vendor = useGetVendor(1); const { enabled: notifications, setEnabled: setNotifications } = useNotificationPermission();
 
   const menu = [
     { icon: 'briefcase', label: 'Business profile', action: () => router.push('/profile') },
-    { icon: 'bell', label: 'Notifications', right: <Switch value={notifications} onValueChange={handleNotificationsChange} trackColor={{ false: c.muted, true: c.primary }} thumbColor={c.card} /> },
+    { icon: 'bell', label: 'Notifications', right: <Switch value={notifications} onValueChange={(value) => { void setNotifications(value); }} trackColor={{ false: c.muted, true: c.primary }} thumbColor={c.card} /> },
     { icon: 'help-circle', label: 'Help & support', action: () => router.push('/help') },
     { icon: 'shield', label: 'Privacy', action: () => router.push('/privacy') },
   ];
